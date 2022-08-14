@@ -21,3 +21,12 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+#SonarQube
+test-report.xml
+eslint-report.json
+/.scannerwork
+
+#vscode dependencies
+.history
+.vscode
