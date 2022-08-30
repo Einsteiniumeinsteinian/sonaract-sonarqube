@@ -4,7 +4,7 @@ const scanner = require('sonarqube-scanner')
 scanner(
   {
     serverUrl: 'http://13.38.217.8:9000',
-    token: 'sqp_783475b09038c3ebd5b3377c20f9d38da20f3beb',
+    token: 'sqp_93e7a6047ad5fbf66d38867125a5ddead1e47dec',
     options: {
       'sonar.sources': './src',
       'sonar.exclusions': '**/*.test.tsx',
