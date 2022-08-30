@@ -47,6 +47,8 @@
   },
   "devDependencies": {
     "jest-sonar-reporter": "^2.0.0",
+    "sonar-quality-gate": "^1.1.13",
+    "sonarqube-build-breaker": "^0.1.0",
     "sonarqube-scanner": "^2.8.1"
   }
 }
