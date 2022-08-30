@@ -1,0 +1,70 @@
+# The qualitygate task breaks the build if the analysis result from SonarQube
+# indicates that any of our quality metrics have not been met.
+- name: qualitygate
+  plan:
+  - in_parallel:
+    - get: artifact
+      passed:
+      - build-and-analyze
+    - get: code-analysis
+      passed:
+      - build-and-analyze
+      trigger: true
+  - task: check-sonarqube-quality-gate
+    config:
+      platform: linux
+      image_resource:
+        type: docker-image
+        source:
+          repository:
+          tag: latest # Use one of the versioned tags for reproducible builds!
+      inputs:
+      - name: code-analysis
+      run:
+        path: /sonarqube-qualitygate-check
+        dir: code-analysis
+
+
+# We deploy only artifacts that have made it through our quality gate!
+- name: deploy
+  plan:
+  - get: artifact
+    passed:
+    - qualitygate
+
+
+
+
+
+#Job:
+#- in_parallel:
+#   - put: sonarqube-code-scan
+#     params:
+#       project_path: github-pr
+#       project_key: ((src-repository))
+#       project_name: ((src-repository))
+#       additional_properties:sonar.coverage.jacoco.xmlReportPaths: target/jacoco-report/jacoco.xml
+#         sonar.junit.reportPaths: ./target/surefire-reports
+#         sonar.scm.disabled: true
+#         sonar.sources: ./app
+#         sonar.tests: ./app/test
+#         sonar.exclusions: '**/test/**'
+#         sonar.test.inclusions: ./app/tests/**/*.test.jsx,./app/tests/**/*.test.js
+
+      #     get_params:
+      # quality_gate:
+      #   ignore_errors: ['new_coverage', 'violations', 'tests', 'new_reliability_rating']
+      #   ignore_warns: ['new_duplicated_lines_density', 'violations']
+      # outputs: github-pr
+      # on_success:
+      #   put: github-pr
+      #   params:
+      #     path: github-pr
+      #     status: SUCCESS
+      #     comment: "SonarQube code scan succeeded :smiley:"
+      #   on_failure:
+      #     put: github-pr
+      #     params:
+      #       path: github-pr
+      #       status: FAILURE
+      #       comment: "SonarQube code scan failed :disappointed:"
